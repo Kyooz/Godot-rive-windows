@@ -87,6 +87,11 @@ void RiveViewerBase::on_ready() {
     int w = width();
     int h = height();
     props.size(w, h);
+
+    #ifdef __EMSCRIPTEN__
+    // Proactively load CanvasKit on Web builds; it will draw once ready.
+    CanvasKitBridge::load();
+    #endif
 }
 
 void RiveViewerBase::check_scene_property_changed() {
