@@ -14,6 +14,11 @@ This extensions adds [Rive](https://rive.app) support to Godot 4.
 It makes use of the following third-party libraries:
 
 - [`rive-cpp`](https://github.com/rive-app/rive-cpp)
+
+> Note
+>
+> This repository is focused on Windows. It takes inspiration from a macOS-oriented project: [kibble-cabal/godot-rive](https://github.com/kibble-cabal/godot-rive). That upstream uses a different dependency/build path (e.g., GN/Ninja on macOS). For Windows users, follow the docs in this repo; for macOS, consider the upstream project or adapt our scripts.
+
 - [`skia`](https://github.com/google/skia) (included in `rive-cpp`)
 
 ## Table of Contents
