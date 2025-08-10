@@ -67,3 +67,7 @@ godot-cpp/**/*.lib
 godot-cpp/**/*.exp
 godot-cpp/**/*.pdb
 godot-cpp/.sconsign.dblite
+
+
+# Remove duplicate addon binaries; use demo/bin as the single source of truth
+demo/addons/rive/bin/**
