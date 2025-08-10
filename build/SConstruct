@@ -126,7 +126,7 @@ else:
 
 # Web CanvasKit bridge sources and pre-js injection
 if env["platform"] == "web":
-    sources += ["../src/web/canvaskit_bridge.cpp"]
+    sources += ["../src/web/canvaskit_bridge.cpp", "../src/web/canvaskit_rive_adapter.cpp"]
     # Emscripten pre-js to load CanvasKit at runtime
     env.Append(LINKFLAGS=[
         "-sSIDE_MODULE=1",

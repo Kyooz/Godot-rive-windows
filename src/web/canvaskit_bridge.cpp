@@ -73,3 +73,32 @@ godot::PackedByteArray CK_DrawDemoToRGBA(int w, int h) {
   return pba;
 }
 
+
+EM_JS(int, gdext_ck_polyline_rgba, (int w, int h, float* pts, int count, float strokeW, int r, int g, int b, int a, void* outPtr, int outSize), {
+  if (typeof Module !== 'undefined' && Module._gdext_ck_polyline_rgba) {
+    return Module._gdext_ck_polyline_rgba(w, h, pts, count, strokeW, r, g, b, a, outPtr, outSize);
+  }
+  return 0;
+});
+
+// Example adapter: draw a polyline based on Vector2 points into RGBA8 buffer
+static godot::PackedByteArray draw_polyline_to_pba(int w, int h, const godot::TypedArray<godot::Vector2>& pts, float stroke_w, const godot::Color& color) {
+  const int size = w * h * 4;
+  godot::PackedByteArray pba;
+  pba.resize(size);
+  if (pba.size() != size) return godot::PackedByteArray();
+  // Allocate temp float array in WASM heap
+  const int count = pts.size();
+  godot::PackedFloat32Array flat;
+  flat.resize(count * 2);
+  for (int i = 0; i < count; i++) {
+    godot::Vector2 v = pts[i];
+    flat[i * 2 + 0] = v.x;
+    flat[i * 2 + 1] = v.y;
+  }
+  // Pass pointer to EM_JS
+  int written = gdext_ck_polyline_rgba(w, h, (float*)flat.ptr(), count, stroke_w, int(color.r8()), int(color.g8()), int(color.b8()), int(color.a8()), (void*)pba.ptrw(), size);
+  if (written != size) return godot::PackedByteArray();
+  return pba;
+}
+

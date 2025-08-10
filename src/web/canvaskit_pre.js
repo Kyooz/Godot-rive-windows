@@ -105,3 +105,45 @@
   };
 })();
 
+
+  // Build a stroked polyline path from {x,y} array and draw
+  Module._gdext_ck_polyline_rgba = function(w, h, ptsPtr, ptsCount, strokeW, r,g,b,a, outPtr, outSize){
+    try{
+      if (!_ckState.loaded) return 0;
+      if (!ensureSurface(w,h)) return 0;
+      var sk = _ckState.CanvasKit;
+      var surface = _ckState.surface;
+      var canvas = surface.getCanvas();
+      canvas.clear(sk.TRANSPARENT);
+
+      var path = new sk.Path();
+      if (ptsCount > 0){
+        var HEAPF32 = Module.HEAPF32;
+        var base = ptsPtr >> 2; // float32 aligned
+        var x0 = HEAPF32[base+0], y0 = HEAPF32[base+1];
+        path.moveTo(x0, y0);
+        for (var i=1;i<ptsCount;i++){
+          var xi = HEAPF32[base + i*2 + 0];
+          var yi = HEAPF32[base + i*2 + 1];
+          path.lineTo(xi, yi);
+        }
+      }
+
+      var stroke = new sk.Paint();
+      stroke.setAntiAlias(true);
+      stroke.setStyle(sk.PaintStyle.Stroke);
+      stroke.setStrokeWidth(strokeW);
+      stroke.setColor(sk.Color(r|0,g|0,b|0,a|0));
+      canvas.drawPath(path, stroke);
+      path.delete(); stroke.delete();
+
+      surface.flush();
+      var pixels = new Uint8Array(w*h*4);
+      var ok = surface.readPixels({width:w, height:h, colorType:sk.ColorType.RGBA_8888, alphaType:sk.AlphaType.Unpremul}, pixels, 4*w);
+      if (!ok) return 0;
+      if (outSize < pixels.byteLength) return 0;
+      Module.HEAPU8.set(pixels, outPtr);
+      return pixels.byteLength;
+    }catch(e){ console.error(e); return 0; }
+  }
+
