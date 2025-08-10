@@ -253,7 +253,24 @@ bool RiveViewerBase::advance(float delta) {
 }
 
 PackedByteArray RiveViewerBase::redraw() {
+
+#ifdef __EMSCRIPTEN__
+// Forward declare bridge helper
+namespace {
+extern godot::PackedByteArray draw_rgba_to_pba(int w, int h);
+}
+#endif
+
     auto artboard = inst.artboard();
+
+    #ifdef __EMSCRIPTEN__
+    // On web, if CanvasKit is ready, produce a demo frame to validate pipeline
+    if (width() > 1 && height() > 1) {
+        extern godot::PackedByteArray CK_DrawDemoToRGBA(int w, int h);
+        godot::PackedByteArray demo = CK_DrawDemoToRGBA(width(), height());
+        if (demo.size() == width() * height() * 4) return demo;
+    }
+    #endif
 
     if (sk.surface && sk.renderer && exists(artboard)) {
         sk.clear();

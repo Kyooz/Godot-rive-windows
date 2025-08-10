@@ -49,3 +49,27 @@ String CanvasKitBridge::version() {
 void register_canvaskit_bridge_types() { ClassDB::register_class<CanvasKitBridge>(); }
 void unregister_canvaskit_bridge_types() {}
 
+
+EM_JS(int, gdext_ck_draw_rgba, (int w, int h, void* ptr, int bufSize), {
+  if (typeof Module !== 'undefined' && Module._gdext_ck_draw_rgba) {
+    return Module._gdext_ck_draw_rgba(w, h, ptr, bufSize);
+  }
+  return 0;
+});
+
+// Helper to draw and readback into a PackedByteArray
+// Exposed with external linkage so other translation units can call it on web builds.
+godot::PackedByteArray CK_DrawDemoToRGBA(int w, int h) {
+  const int size = w * h * 4;
+  godot::PackedByteArray pba;
+  pba.resize(size);
+  if (pba.size() != size) return godot::PackedByteArray();
+  // Get pointer into WASM heap
+  godot::uint8_t* data = pba.ptrw();
+  int written = gdext_ck_draw_rgba(w, h, (void*)data, size);
+  if (written != size) {
+    return godot::PackedByteArray();
+  }
+  return pba;
+}
+

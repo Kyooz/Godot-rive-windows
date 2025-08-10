@@ -10,5 +10,11 @@ public:
   static void load();
   static bool is_ready();
   static godot::String version();
+
+// Draw a demo rectangle/circle into an RGBA8 buffer and return as PackedByteArray
+// Only available on Web builds.
+namespace godot { class PackedByteArray; }
+godot::PackedByteArray CK_DrawDemoToRGBA(int w, int h);
+
 };
 
