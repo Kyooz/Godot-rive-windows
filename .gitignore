@@ -6,3 +6,55 @@
 *.os
 *.o
 .sconsign.dblite
+
+# vcpkg (do not vendor the manager and caches)
+thirdparty/vcpkg/
+!thirdparty/vcpkg/README.md
+!thirdparty/vcpkg/bootstrap*.bat
+!thirdparty/vcpkg/bootstrap*.sh
+
+# Visual Studio / MSBuild intermediates (local)
+**/*.VC.db
+**/*.opendb
+**/.vs/
+**/x64/
+**/Win32/
+
+# Premake downloads (local tools)
+thirdparty/premake/
+
+# Rive build outputs (local)
+thirdparty/rive-cpp/build/
+thirdparty/rive-cpp/dependencies/windows/cache/
+
+# Godot-cpp build outputs
+godot-cpp/bin/
+
+# Build dir intermediates
+build/.sconsign.dblite
+build/*.obj
+build/*.exp
+build/*.lib
+build/*.pdb
+
+# Demo binaries
+/demo/bin/*.dll
+/demo/bin/*.lib
+/demo/bin/*.exp
+/demo/bin/*.pdb
+
+# Keep only the minimal Rive legacy Skia renderer source; ignore the rest
+thirdparty/rive-cpp-legacy/**
+!thirdparty/rive-cpp-legacy/skia/
+thirdparty/rive-cpp-legacy/skia/**
+!thirdparty/rive-cpp-legacy/skia/renderer/
+thirdparty/rive-cpp-legacy/skia/renderer/**
+!thirdparty/rive-cpp-legacy/skia/renderer/include/
+!thirdparty/rive-cpp-legacy/skia/renderer/include/**
+!thirdparty/rive-cpp-legacy/skia/renderer/src/
+!thirdparty/rive-cpp-legacy/skia/renderer/src/**
+
+
+# Ignore upstream reference repo entirely (we don't use it in build)
+thirdparty/rive-cpp-upstream/**
+

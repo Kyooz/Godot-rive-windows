@@ -24,8 +24,8 @@ Tested on Windows 10/11 x64, VS 2022 Community.
 - SCons (recommended install via pip):
   - pip install scons
 
-- vcpkg (Skia + dependencies) vendored in this repo:
-  - thirdparty\\vcpkg
+- vcpkg installed separately (not vendored in this repo):
+  - Set VCPKG_ROOT to your vcpkg path
   - Triplet: x64-windows-static
 
 - premake5 (vendored in thirdparty\\premake; if missing, see below)

@@ -20,8 +20,8 @@ Tested on Windows 10/11 x64, VS 2022 Community.
 - Python 3.x
 - SCons (installed via pip recommended):
   - pip install scons
-- vcpkg (Skia + dependencies) vendored in this repo at:
-  - thirdparty\\vcpkg
+- vcpkg installed separately (not vendored in this repo):
+  - Set VCPKG_ROOT to your vcpkg path
   - Triplet used: x64-windows-static
 - premake5 (already available via thirdparty\\premake, or use helper script below)
 
