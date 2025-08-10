@@ -12,6 +12,7 @@
 
 // Optional: web bridge registration (only linked on web build)
 #ifdef __EMSCRIPTEN__
+#include "web/canvaskit_bridge.hpp"
 void register_canvaskit_bridge_types();
 void unregister_canvaskit_bridge_types();
 #endif

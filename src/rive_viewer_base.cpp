@@ -20,6 +20,10 @@
 #include "utils/godot_macros.hpp"
 #include "utils/types.hpp"
 
+#ifdef __EMSCRIPTEN__
+#include "web/canvaskit_bridge.hpp"
+#endif
+
 const Image::Format IMAGE_FORMAT = Image::Format::FORMAT_RGBA8;
 
 RiveViewerBase::RiveViewerBase(CanvasItem *owner) {
