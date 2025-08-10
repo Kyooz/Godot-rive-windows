@@ -18,12 +18,25 @@ It makes use of the following third-party libraries:
 
 ## Table of Contents
 
-1. [Features](#features)
-2. [Building](#building)
-3. [Installation](#installation)
-4. [Roadmap](#roadmap)
-5. [Contributing](#contributing)
-6. [Screenshots](#screenshots)
+- [Godot Rive](#godot-rive)
+  - [Table of Contents](#table-of-contents)
+  - [Lean repository policy](#lean-repository-policy)
+  - [Features](#features)
+  - [Building](#building)
+  - [Installation](#installation)
+  - [Roadmap](#roadmap)
+  - [Contributing](#contributing)
+  - [Screenshots](#screenshots)
+
+## Lean repository policy
+
+- No vendored vcpkg packages. Use an external vcpkg installation and set VCPKG_ROOT (+ VCPKG_TRIPLET), or pass SCons args vcpkg_root=... vcpkg_triplet=...
+  - See docs/windows-build.md (CN) or docs/windows-build.en.md (EN)
+- Only the minimal legacy Skia renderer sources are tracked:
+  - thirdparty/rive-cpp-legacy/skia/renderer/include/**
+  - thirdparty/rive-cpp-legacy/skia/renderer/src/**
+- Build outputs are ignored (godot-cpp/bin, demo/bin, *.obj/*.lib/*.exp/*.pdb)
+- Submodules: we use upstream godot-cpp; avoid changing its pointer; restore via `git submodule update --init --recursive` if needed
 
 ## Features
 
@@ -66,6 +79,7 @@ python build.py --help
 
 1. Copy `demo/bin/`, `demo/icons/`, and `demo/rive.gdextension` to your project folder
 2. Update the paths in `rive.gdextension` to match your project folder structure
+
 
 ## Roadmap
 - [x] Load `.riv` files
