@@ -88,32 +88,42 @@ if env["platform"] != "web":
         )
         print(f"Using Skia from GN output: {SKIA_GN_OUT}")
 
-# Add rive library
-
-lib_prefix = '' if env['platform'] == 'windows' else 'lib'
-
-rive_bins = [
-    GetRiveBin(f"build/{{platform}}/bin/{{target}}/{lib_prefix}rive{{suffix}}"),
-    # Enable Skia renderer for proper rendering
-    # Skia renderer is compiled from source directly (no prebuilt lib)
-    # See SKIA_RENDERER_SRC added to sources below
-    GetRiveBin(f"dependencies/{{platform}}/cache/bin/{{target}}/{lib_prefix}rive_harfbuzz{{suffix}}"),
-    GetRiveBin(f"dependencies/{{platform}}/cache/bin/{{target}}/{lib_prefix}rive_sheenbidi{{suffix}}"),
-]
-
-for lib in rive_bins:
-    env.RequireFile(lib)
-
+# Add rive library (skip for Web minimal build)
 RIVE_SRC_DIR = "../thirdparty/rive-cpp/"
-env.Prepend(
-    LIBS=rive_bins,
-    CPPPATH=[
-        RIVE_SRC_DIR,
-        join(RIVE_SRC_DIR, "include"),
-        join(RIVE_SRC_DIR, "src"),
-        join(RIVE_SRC_DIR, "utils"),  # For NoOp factory (fallback)
-    ],
-)
+if env["platform"] != "web":
+    lib_prefix = '' if env['platform'] == 'windows' else 'lib'
+
+    rive_bins = [
+        GetRiveBin(f"build/{{platform}}/bin/{{target}}/{lib_prefix}rive{{suffix}}"),
+        # Enable Skia renderer for proper rendering
+        # Skia renderer is compiled from source directly (no prebuilt lib)
+        # See SKIA_RENDERER_SRC added to sources below
+        GetRiveBin(f"dependencies/{{platform}}/cache/bin/{{target}}/{lib_prefix}rive_harfbuzz{{suffix}}"),
+        GetRiveBin(f"dependencies/{{platform}}/cache/bin/{{target}}/{lib_prefix}rive_sheenbidi{{suffix}}"),
+    ]
+
+    for lib in rive_bins:
+        env.RequireFile(lib)
+
+    env.Prepend(
+        LIBS=rive_bins,
+        CPPPATH=[
+            RIVE_SRC_DIR,
+            join(RIVE_SRC_DIR, "include"),
+            join(RIVE_SRC_DIR, "src"),
+            join(RIVE_SRC_DIR, "utils"),  # For NoOp factory (fallback)
+        ],
+    )
+else:
+    # Minimal includes so headers compile if needed
+    env.Prepend(
+        CPPPATH=[
+            RIVE_SRC_DIR,
+            join(RIVE_SRC_DIR, "include"),
+            join(RIVE_SRC_DIR, "src"),
+            join(RIVE_SRC_DIR, "utils"),
+        ],
+    )
 
 # Add source files
 env.Append(CPPPATH=["../src/"])
