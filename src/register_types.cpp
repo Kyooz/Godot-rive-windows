@@ -9,6 +9,13 @@
 #include "rive_viewer.hpp"
 #include "rive_viewer_2d.hpp"
 
+
+// Optional: web bridge registration (only linked on web build)
+#ifdef __EMSCRIPTEN__
+void register_canvaskit_bridge_types();
+void unregister_canvaskit_bridge_types();
+#endif
+
 using namespace godot;
 
 void initialize_rive_module(ModuleInitializationLevel p_level) {
@@ -19,9 +26,20 @@ void initialize_rive_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<RiveViewer>();
     ClassDB::register_class<RiveViewer2D>();
     ClassDB::register_class<RiveFile>();
+
+    // Register web bridge if linked in web builds
+    #ifdef __EMSCRIPTEN__
+    register_canvaskit_bridge_types();
+    #endif
+
     ClassDB::register_class<RiveArtboard>();
     ClassDB::register_class<RiveScene>();
     ClassDB::register_class<RiveInput>();
+
+    #ifdef __EMSCRIPTEN__
+    unregister_canvaskit_bridge_types();
+    #endif
+
     ClassDB::register_class<RiveListener>();
     ClassDB::register_class<RiveAnimation>();
 }
