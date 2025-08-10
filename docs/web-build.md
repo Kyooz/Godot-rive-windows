@@ -38,3 +38,34 @@ Notes
 - The Web build currently skips Skia/vcpkg and legacy Skia renderer sources
 - Future work may implement a Web renderer path (e.g., CanvasKit bridge or a Godot canvas integration)
 
+
+
+## Current progress (feature/web)
+
+- Web side module builds and loads; .gdextension contains web.debug/release entries
+- Pre-JS loader dynamically fetches CanvasKit (Skia WASM) and creates a surface for rendering
+- C++ ↔ JS bridge (CanvasKitBridge): load/is_ready/version; demo frame rendered and read back via readPixels
+- Adapter skeleton in place to map Rive drawing to CanvasKit (polyline path prototype wired)
+
+## Next steps
+
+1) Replace demo drawing with real Rive shapes on Web
+   - Extract simple paths (polylines/segments) from current draw flow
+   - Use CK polyline pathway to stroke and display real outlines
+2) Support fills and closed paths
+   - Map fill rules, colors, and alpha to CanvasKit Paint/Path
+3) Optional: images and text
+   - Bridge images and text shaping when needed; start with minimal viable features
+4) Performance
+   - Switch to WebGL-backed surface once correctness is verified; keep readPixels for integration
+5) Documentation
+   - Grow this doc: add emscripten version notes, export caveats, and troubleshooting
+
+## How to pick up next time
+
+- Ensure Emscripten 3.1.43/3.1.44 is active in your shell/session
+- Build:
+  - cd build
+  - scons platform=web target=template_debug -j8
+- Export demo to Web in Godot, confirm CanvasKit loads and a frame is rendered
+- Continue implementing Rive→CanvasKit mapping in src/web/* per plan above
