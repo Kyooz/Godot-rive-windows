@@ -58,3 +58,12 @@ thirdparty/rive-cpp-legacy/skia/renderer/**
 # Ignore upstream reference repo entirely (we don't use it in build)
 thirdparty/rive-cpp-upstream/**
 
+
+
+# Godot C++ build outputs (keep sources, ignore artifacts)
+godot-cpp/bin/
+godot-cpp/**/*.obj
+godot-cpp/**/*.lib
+godot-cpp/**/*.exp
+godot-cpp/**/*.pdb
+godot-cpp/.sconsign.dblite

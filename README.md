@@ -33,22 +33,22 @@ It makes use of the following third-party libraries:
 
 ## Building
 
-> [!IMPORTANT]
-> These instructions are only tested on M1 MacOS. You may have to modify `build/build.py` or `build/SConstruct` for your system.
+- Windows users: see docs/windows-build.md (CN) or docs/windows-build.en.md (EN)
+- macOS users: the project was originally tested on Apple Silicon; you may need to adapt `build/build.py` or `build/SConstruct`
 
-The following must be installed:
+Required tools:
 - Python 3
 - [git](https://git-scm.com/)
 - [scons](https://scons.org/)
 - [ninja](https://ninja-build.org/)
 
-To build, run the following commands (from the root directory):
+Quick start (generic):
 ```bash
 cd build
 python build.py
 ```
 
-To see the available options, run:
+Help:
 ```bash
 python build.py --help
 ```
