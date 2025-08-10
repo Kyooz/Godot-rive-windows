@@ -15,6 +15,9 @@ public:
 // Only available on Web builds.
 namespace godot { class PackedByteArray; }
 godot::PackedByteArray CK_DrawDemoToRGBA(int w, int h);
+// Draw a stroked polyline to RGBA8
+namespace godot { class Vector2; template <class T> class TypedArray; }
+godot::PackedByteArray CK_DrawPolylineToRGBA(int w, int h, const godot::TypedArray<godot::Vector2>& pts, float stroke_w, const godot::Color& color);
 
 };
 

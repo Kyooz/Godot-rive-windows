@@ -102,3 +102,9 @@ static godot::PackedByteArray draw_polyline_to_pba(int w, int h, const godot::Ty
   return pba;
 }
 
+// Public wrapper for polyline draw
+godot::PackedByteArray CK_DrawPolylineToRGBA(int w, int h, const godot::TypedArray<godot::Vector2>& pts, float stroke_w, const godot::Color& color) {
+  return draw_polyline_to_pba(w, h, pts, stroke_w, color);
+}
+
+
