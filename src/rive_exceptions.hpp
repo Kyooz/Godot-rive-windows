@@ -11,6 +11,11 @@
 #include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
+// Define _NOEXCEPT macro for compatibility
+#ifndef _NOEXCEPT
+#define _NOEXCEPT noexcept
+#endif
+
 using namespace std;
 
 class RiveException : public exception {

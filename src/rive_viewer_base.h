@@ -22,18 +22,13 @@
 #include <rive/animation/state_machine_instance.hpp>
 #include <rive/file.hpp>
 
-// skia
-#include <skia/dependencies/skia/include/core/SkBitmap.h>
-#include <skia/dependencies/skia/include/core/SkCanvas.h>
-#include <skia/dependencies/skia/include/core/SkSurface.h>
-
-#include <skia/renderer/include/skia_factory.hpp>
-#include <skia/renderer/include/skia_renderer.hpp>
+// Enable Skia includes
+#include "skia_instance.hpp"
 
 // extension
 #include "api/rive_file.hpp"
 #include "rive_instance.hpp"
-#include "skia_instance.hpp"
+#include "noop_instance.hpp"
 #include "utils/out_redirect.hpp"
 #include "utils/types.hpp"
 #include "viewer_props.hpp"
