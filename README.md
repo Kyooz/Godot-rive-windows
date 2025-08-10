@@ -1,16 +1,18 @@
 # Godot Rive
 
-### An integration of Rive into Godot 4.1+ using GDExtension
+An integration of Rive into Godot 4.1+ using GDExtension.
 
-> [!WARNING]
-> This extension is in **alpha**. That means:
-> * You may encounter some bugs
-> * It's untested on many platforms
-> * Most features are implemented, but the API may change a little
+> Warning
+>
+> This extension is in alpha:
+> - You may encounter some bugs
+> - It's untested on many platforms
+> - Most features are implemented, but the API may change a little
 
 This extensions adds [Rive](https://rive.app) support to Godot 4.
 
 It makes use of the following third-party libraries:
+
 - [`rive-cpp`](https://github.com/rive-app/rive-cpp)
 - [`skia`](https://github.com/google/skia) (included in `rive-cpp`)
 
@@ -25,39 +27,42 @@ It makes use of the following third-party libraries:
 
 ## Features
 
-* Load `.riv` files (artboards, animations, and state machines)
-* Listen for input events
-* Change state machine properties in-editor and in code
-* Robust API for runtime interaction
-* Optimized for Godot
+- Load `.riv` files (artboards, animations, and state machines)
+- Listen for input events
+- Change state machine properties in-editor and in code
+- Robust API for runtime interaction
+- Optimized for Godot
 
 ## Building
 
 - Windows users: see docs/windows-build.md (CN) or docs/windows-build.en.md (EN)
-- macOS users: the project was originally tested on Apple Silicon; you may need to adapt `build/build.py` or `build/SConstruct`
+- macOS users: originally tested on Apple Silicon; you may need to adapt `build/build.py` or `build/SConstruct`
 
 Required tools:
+
 - Python 3
 - [git](https://git-scm.com/)
 - [scons](https://scons.org/)
 - [ninja](https://ninja-build.org/)
 
 Quick start (generic):
+
 ```bash
 cd build
 python build.py
 ```
 
 Help:
+
 ```bash
 python build.py --help
 ```
 
 ## Installation
 
-> [!IMPORTANT]
-> If you are not on M1 MacOS, you will need to build the extension yourself. Binaries are only provided for MacOS universal (debug and release).
-> Eventually, binaries will be provided for other platforms.
+> Note
+>
+> Prebuilt binaries are currently only provided for macOS universal (debug and release). For other platforms, please build locally following the docs.
 
 1. Copy `demo/bin/`, `demo/icons/`, and `demo/rive.gdextension` to your project folder
 2. Update the paths in `rive.gdextension` to match your project folder structure
@@ -85,11 +90,12 @@ python build.py --help
 ## Contributing
 
 Help would be MUCH appreciated testing and/or building for the following platforms:
-* Windows
-* Android
-* iOS
-* Linux
-* Web
+
+- Windows
+- Android
+- iOS
+- Linux
+- Web
 
 Feel free to contribute bug fixes (see open issues), documentation, or features as well.
 
