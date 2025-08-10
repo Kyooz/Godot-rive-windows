@@ -37,54 +37,56 @@ if env["platform"] == "windows":
 sources = []
 
 # Skia dependencies - prefer vcpkg if provided, otherwise fall back to GN-built Skia
-vcpkg_root = ARGUMENTS.get("vcpkg_root") or env.get("vcpkg_root") or env["ENV"].get("VCPKG_ROOT")
-vcpkg_triplet = (
-    ARGUMENTS.get("vcpkg_triplet")
-    or env.get("vcpkg_triplet")
-    or env["ENV"].get("VCPKG_TRIPLET")
-    or ("x64-windows-static" if env["platform"] == "windows" else None)
-)
-
-if vcpkg_root and vcpkg_triplet:
-    SKIA_VCPKG_DIR = join(vcpkg_root, "installed", vcpkg_triplet)
-    include_dir = join(SKIA_VCPKG_DIR, "include")
-    include_dir_skia = join(SKIA_VCPKG_DIR, "include", "skia")
-    lib_dir = join(SKIA_VCPKG_DIR, "lib")
-    bin_dir = join(SKIA_VCPKG_DIR, "bin")
-
-    libs = ["skia"]
-    # Add optional Skia component libs if present in vcpkg
-    extra_libs = ["skparagraph", "skshaper", "skunicode_core", "skunicode_icu"]
-    for libname in extra_libs:
-        libfile = join(lib_dir, f"{libname}.lib") if env["platform"] == "windows" else join(lib_dir, f"lib{libname}.a")
-        if exists(libfile):
-            libs.append(libname)
-
-    # Add common codec and ICU/freetype deps Skia may require (conditionally if present)
-    dep_candidates = [
-        'libpng16', 'zlib', 'jpeg', 'turbojpeg',
-        'libwebp', 'libwebpdecoder', 'libwebpdemux', 'libwebpmux',
-        'brotlicommon', 'brotlidec', 'brotlienc',
-        'libexpatMT', 'freetype', 'bz2',
-        'icudt', 'icuin', 'icuio', 'icuuc',
-    ]
-    for dep in dep_candidates:
-        depfile = join(lib_dir, f"{dep}.lib") if env['platform'] == 'windows' else join(lib_dir, f"lib{dep}.a")
-        if exists(depfile):
-            libs.append(dep)
-
-    env.Prepend(LIBS=libs, LIBPATH=[lib_dir], CPPPATH=[include_dir, include_dir_skia])
-    print(f"Using Skia from vcpkg: {SKIA_VCPKG_DIR} (libs: {', '.join(libs)})")
-else:
-    # Fallback to GN/Ninja built Skia under thirdparty
-    SKIA_GN_OUT = "../thirdparty/rive-cpp/skia/dependencies/skia/out/Static"
-    SKIA_SRC_DIR = "../thirdparty/rive-cpp/skia"
-    env.Prepend(
-        LIBS=["skia"],
-        LIBPATH=[SKIA_GN_OUT],
-        CPPPATH=[join(SKIA_SRC_DIR, "include"), SKIA_SRC_DIR],
+# Skip Skia entirely for Web (we'll use a minimal stub first)
+if env["platform"] != "web":
+    vcpkg_root = ARGUMENTS.get("vcpkg_root") or env.get("vcpkg_root") or env["ENV"].get("VCPKG_ROOT")
+    vcpkg_triplet = (
+        ARGUMENTS.get("vcpkg_triplet")
+        or env.get("vcpkg_triplet")
+        or env["ENV"].get("VCPKG_TRIPLET")
+        or ("x64-windows-static" if env["platform"] == "windows" else None)
     )
-    print(f"Using Skia from GN output: {SKIA_GN_OUT}")
+
+    if vcpkg_root and vcpkg_triplet:
+        SKIA_VCPKG_DIR = join(vcpkg_root, "installed", vcpkg_triplet)
+        include_dir = join(SKIA_VCPKG_DIR, "include")
+        include_dir_skia = join(SKIA_VCPKG_DIR, "include", "skia")
+        lib_dir = join(SKIA_VCPKG_DIR, "lib")
+        bin_dir = join(SKIA_VCPKG_DIR, "bin")
+
+        libs = ["skia"]
+        # Add optional Skia component libs if present in vcpkg
+        extra_libs = ["skparagraph", "skshaper", "skunicode_core", "skunicode_icu"]
+        for libname in extra_libs:
+            libfile = join(lib_dir, f"{libname}.lib") if env["platform"] == "windows" else join(lib_dir, f"lib{libname}.a")
+            if exists(libfile):
+                libs.append(libname)
+
+        # Add common codec and ICU/freetype deps Skia may require (conditionally if present)
+        dep_candidates = [
+            'libpng16', 'zlib', 'jpeg', 'turbojpeg',
+            'libwebp', 'libwebpdecoder', 'libwebpdemux', 'libwebpmux',
+            'brotlicommon', 'brotlidec', 'brotlienc',
+            'libexpatMT', 'freetype', 'bz2',
+            'icudt', 'icuin', 'icuio', 'icuuc',
+        ]
+        for dep in dep_candidates:
+            depfile = join(lib_dir, f"{dep}.lib") if env['platform'] == 'windows' else join(lib_dir, f"lib{dep}.a")
+            if exists(depfile):
+                libs.append(dep)
+
+        env.Prepend(LIBS=libs, LIBPATH=[lib_dir], CPPPATH=[include_dir, include_dir_skia])
+        print(f"Using Skia from vcpkg: {SKIA_VCPKG_DIR} (libs: {', '.join(libs)})")
+    else:
+        # Fallback to GN/Ninja built Skia under thirdparty
+        SKIA_GN_OUT = "../thirdparty/rive-cpp/skia/dependencies/skia/out/Static"
+        SKIA_SRC_DIR = "../thirdparty/rive-cpp/skia"
+        env.Prepend(
+            LIBS=["skia"],
+            LIBPATH=[SKIA_GN_OUT],
+            CPPPATH=[join(SKIA_SRC_DIR, "include"), SKIA_SRC_DIR],
+        )
+        print(f"Using Skia from GN output: {SKIA_GN_OUT}")
 
 # Add rive library
 
@@ -115,23 +117,30 @@ env.Prepend(
 
 # Add source files
 env.Append(CPPPATH=["../src/"])
-sources += env.GlobRecursive("../src", "*.cpp")
+if env["platform"] == "web":
+    # For Web, start with a minimal stub to validate pipeline
+    sources += ["../src/web_stub.cpp", "../src/register_types.cpp"]
+else:
+    sources += env.GlobRecursive("../src", "*.cpp")
 
 # Integrate Rive Skia renderer from source (from rive-cpp-legacy)
-SKIA_RENDERER_DIR = "../thirdparty/rive-cpp-legacy/skia/renderer"
-SKIA_RENDERER_INC = join(SKIA_RENDERER_DIR, "include")
-SKIA_RENDERER_SRC_DIR = join(SKIA_RENDERER_DIR, "src")
+if env["platform"] != "web":
+    SKIA_RENDERER_DIR = "../thirdparty/rive-cpp-legacy/skia/renderer"
+    SKIA_RENDERER_INC = join(SKIA_RENDERER_DIR, "include")
+    SKIA_RENDERER_SRC_DIR = join(SKIA_RENDERER_DIR, "src")
 
-# Headers for <skia/renderer/include/...>
-# Need repo root so includes like <skia/renderer/include/skia_factory.hpp> resolve
-env.Append(CPPPATH=["../thirdparty/rive-cpp-legacy", SKIA_RENDERER_INC, SKIA_RENDERER_SRC_DIR])
+    # Headers for <skia/renderer/include/...>
+    # Need repo root so includes like <skia/renderer/include/skia_factory.hpp> resolve
+    env.Append(CPPPATH=["../thirdparty/rive-cpp-legacy", SKIA_RENDERER_INC, SKIA_RENDERER_SRC_DIR])
 
-# Source files to compile into this extension
-SKIA_RENDERER_SRC = [
-    join(SKIA_RENDERER_SRC_DIR, "skia_factory.cpp"),
-]
+    # Source files to compile into this extension
+    SKIA_RENDERER_SRC = [
+        join(SKIA_RENDERER_SRC_DIR, "skia_factory.cpp"),
+    ]
 
-sources += SKIA_RENDERER_SRC
+    sources += SKIA_RENDERER_SRC
+else:
+    print("Web platform: skipping Skia renderer; using NoOp factory path")
 
 # Add NoOp factory source as fallback (keep for compatibility)
 sources += [join(RIVE_SRC_DIR, "utils/no_op_factory.cpp")]
