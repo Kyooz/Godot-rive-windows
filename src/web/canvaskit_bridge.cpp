@@ -1,3 +1,4 @@
+#include "canvaskit_bridge.hpp"
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
 #include <godot_cpp/core/class_db.hpp>
@@ -29,24 +30,20 @@ EM_JS(const char*, gdext_ck_version, (), {
 });
 }
 
-class CanvasKitBridge : public Object {
-  GDCLASS(CanvasKitBridge, Object);
-public:
-  static void _bind_methods() {
-    ClassDB::bind_static_method("CanvasKitBridge", D_METHOD("load"), &CanvasKitBridge::load);
-    ClassDB::bind_static_method("CanvasKitBridge", D_METHOD("is_ready"), &CanvasKitBridge::is_ready);
-    ClassDB::bind_static_method("CanvasKitBridge", D_METHOD("version"), &CanvasKitBridge::version);
-  }
+void CanvasKitBridge::_bind_methods() {
+  ClassDB::bind_static_method("CanvasKitBridge", D_METHOD("load"), &CanvasKitBridge::load);
+  ClassDB::bind_static_method("CanvasKitBridge", D_METHOD("is_ready"), &CanvasKitBridge::is_ready);
+  ClassDB::bind_static_method("CanvasKitBridge", D_METHOD("version"), &CanvasKitBridge::version);
+}
 
-  static void load() { gdext_ck_load(); }
-  static bool is_ready() { return gdext_ck_ready() != 0; }
-  static String version() {
-    const char* c = gdext_ck_version();
-    String s = String::utf8(c);
-    free((void*)c);
-    return s;
-  }
-};
+void CanvasKitBridge::load() { gdext_ck_load(); }
+bool CanvasKitBridge::is_ready() { return gdext_ck_ready() != 0; }
+String CanvasKitBridge::version() {
+  const char* c = gdext_ck_version();
+  String s = String::utf8(c);
+  free((void*)c);
+  return s;
+}
 
 // Register on web only; safe if compiled elsewhere but intended for web.
 void register_canvaskit_bridge_types() { ClassDB::register_class<CanvasKitBridge>(); }
