@@ -25,6 +25,7 @@
 
 struct RiveInstance {
     friend class RiveViewerBase;
+    friend class RiveSprite2DBase;
 
     ViewerProps *props;
     Ref<RiveFile> file;

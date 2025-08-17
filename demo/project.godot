@@ -15,13 +15,21 @@ run/main_scene="res://animation_switch_test.tscn"
 config/features=PackedStringArray("4.5", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+DebugMenu="*res://addons/debug_menu/debug_menu.tscn"
+
+[display]
+
+window/stretch/mode="canvas_items"
+
 [dotnet]
 
 project/assembly_name="Rive Extension"
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/debug_menu/plugin.cfg")
 
 [rendering]
 
